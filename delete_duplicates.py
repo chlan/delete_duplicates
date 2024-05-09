@@ -19,29 +19,26 @@ def find_duplicates(directory, preferred_ext, default_ext, recursive):
         # Gruppieren der Dateien nach Namen ohne Erweiterung
         for file in files:
             name, ext = os.path.splitext(file)
-            ext = ext[1:]  # entferne den Punkt
+            ext = ext[1:]  # entferne den Punkt und konvertiere zu Kleinbuchstaben
+            base_name = os.path.join(root, name)
             if ext == preferred_ext or ext == default_ext:
-                if name in grouped_files:
-                    grouped_files[name].append(ext)
+                if base_name in grouped_files:
+                    grouped_files[base_name].append(ext)
                 else:
-                    grouped_files[name] = [ext]
+                    grouped_files[base_name] = [ext]
 
         # Entscheiden, welche Dateien zu löschen oder zu behalten sind
-        for name, files in grouped_files.items():
-            preferred_file = f"{name}.{preferred_ext}"
-            default_file = f"{name}.{default_ext}"
-            if preferred_file in files and default_file in files:
-                files_to_keep.append(os.path.join(root, preferred_file))
-                files_to_delete.append(os.path.join(root, default_file))
-            elif preferred_file in files:
-                files_to_keep.append(os.path.join(root, preferred_file))
-            elif default_file in files:
-                files_to_keep.append(os.path.join(root, default_file))
+        for base_name, exts in grouped_files.items():
+            if preferred_ext in exts and default_ext in exts:
+                files_to_keep.append(f"{base_name}.{preferred_ext}")
+                files_to_delete.append(f"{base_name}.{default_ext}")
+            elif preferred_ext in exts:
+                files_to_keep.append(f"{base_name}.{preferred_ext}")
+            elif default_ext in exts:
+                files_to_keep.append(f"{base_name}.{default_ext}")
 
     files_to_delete.sort()
     files_to_keep.sort()
-    # print("Files to keep", files_to_keep)
-    # print("Files to delete", files_to_delete)
 
     return files_to_keep, files_to_delete
 
@@ -52,8 +49,11 @@ def delete_files(files, dry_run):
         if dry_run:
             print(file)
         else:
-            os.remove(file)
-            print(f"Datei gelöscht: {file}")
+            try:
+                os.remove(file)
+                print(f"Datei gelöscht: {file}")
+            except FileNotFoundError:
+                print(f"Datei nicht gefunden: {file}")
 
 def main():
     parser = argparse.ArgumentParser(description="Sucht und löscht Duplikate basierend auf Dateierweiterungen.")
