@@ -27,14 +27,16 @@ def find_duplicates(directory, preferred_ext, default_ext, recursive):
                     grouped_files[name] = [ext]
 
         # Entscheiden, welche Dateien zu löschen oder zu behalten sind
-        for name, exts in grouped_files.items():
-            if preferred_ext in exts and default_ext in exts:
-                files_to_keep.append(f"{name}.{preferred_ext}")
-                files_to_delete.append(f"{name}.{default_ext}")
-            elif preferred_ext in exts:
-                files_to_keep.append(f"{name}.{preferred_ext}")
-            elif default_ext in exts:
-                files_to_keep.append(f"{name}.{default_ext}")
+        for name, files in grouped_files.items():
+            preferred_file = f"{name}.{preferred_ext}"
+            default_file = f"{name}.{default_ext}"
+            if preferred_file in files and default_file in files:
+                files_to_keep.append(os.path.join(root, preferred_file))
+                files_to_delete.append(os.path.join(root, default_file))
+            elif preferred_file in files:
+                files_to_keep.append(os.path.join(root, preferred_file))
+            elif default_file in files:
+                files_to_keep.append(os.path.join(root, default_file))
 
     files_to_delete.sort()
     files_to_keep.sort()
