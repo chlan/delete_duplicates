@@ -40,20 +40,24 @@ def find_duplicates(directory, preferred_ext, default_ext, recursive):
     files_to_delete.sort()
     files_to_keep.sort()
 
+    print(f"Anzahl zu behaltende Dateien: {len(files_to_keep)}")
+    print(f"Anzahl zu löschender Dateien: {len(files_to_delete)}")
+
     return files_to_keep, files_to_delete
 
 def delete_files(files, dry_run):
     if dry_run:
-        print("Dry run aktiviert. Folgende Dateien würden gelöscht:")
+        print(f"Dry run aktiviert. Folgende {len(files)} Dateien würden gelöscht:")
     for file in files:
         if dry_run:
-            print(file)
+            print(file, end="", sep="")
         else:
             try:
                 os.remove(file)
                 print(f"Datei gelöscht: {file}")
             except FileNotFoundError:
                 print(f"Datei nicht gefunden: {file}")
+    print()
 
 def main():
     parser = argparse.ArgumentParser(description="Sucht und löscht Duplikate basierend auf Dateierweiterungen.")
@@ -67,9 +71,10 @@ def main():
     files_to_keep, files_to_delete = find_duplicates(".", args.preferred, args.default, args.recursive)
 
     # Ergebnisse ausgeben
-    print("Zu erhaltende Dateien:")
+    print(f"{len(files_to_keep)} zu erhaltende Dateien:")
     for file in files_to_keep:
-        print(file)
+        print(file, end="", sep="")
+    print()
 
     # Dateien löschen, falls nicht Dry Run
     delete_files(files_to_delete, args.dry_run)
