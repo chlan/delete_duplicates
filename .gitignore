@@ -1,0 +1,37 @@
+# IntelliJ IDEA specific files
+.idea/
+*.iml
+
+# Verzeichnis, das von vielen JetBrains-Produkten verwendet wird
+.idea/
+
+# XML-basierte Projektdatei, die IDE-spezifische Konfigurationen enthält
+*.iml
+
+# Local configuration file (sandbox-specific)
+*.iws
+
+# Workspace-Datei, die IDE-spezifische Einstellungen enthält
+*.ipr
+
+# Gradle:
+.gradle/
+
+# Build Output-Verzeichnis
+out/
+
+# Dateien, die bei der Kompilierung entstehen
+*.class
+
+# Paketdateien
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# OS generated files #
+######################
+.DS_Store
+Thumbs.db
